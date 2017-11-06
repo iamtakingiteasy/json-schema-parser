@@ -1,14 +1,14 @@
 {
-  "name": "json-schema-parser",
+  "name": "json-schema-ui-parser",
   "version": "1.0.0",
-  "description": "JSON schema parser",
+  "description": "JSON schema ui parser",
   "main": "index.js",
   "scripts": {
     "test": "tape src/**/*_test.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iamtakingiteasy/json-schema-parser.git"
+    "url": "git+https://github.com/iamtakingiteasy/json-schema-ui-parser.git"
   },
   "keywords": [
     "json-schema",
@@ -17,11 +17,10 @@
   "author": "Alexander Tumin",
   "license": "WTFPL",
   "bugs": {
-    "url": "https://github.com/iamtakingiteasy/json-schema-parser/issues"
+    "url": "https://github.com/iamtakingiteasy/json-schema-ui-parser/issues"
   },
-  "homepage": "https://github.com/iamtakingiteasy/json-schema-parser#readme",
+  "homepage": "https://github.com/iamtakingiteasy/json-schema-ui-parser#readme",
   "dependencies": {
-    "tv4": "^1.3.0",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
