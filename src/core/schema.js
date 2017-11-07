@@ -5,7 +5,6 @@ exports = module.exports = JsonSchema;
 
 function JsonSchema(schema, root) {
     this.parse(schema, root || this);
-    this.root = null;
 }
 
 JsonSchema.prototype.parse = function (schema, root) {
@@ -134,7 +133,7 @@ JsonSchema.prototype.process = function (rcv) {
     const schema = this.schema;
     if (schema['ref']) {
         if (schema.ref.url === null) {
-            new JsonSchema(schema.ref.parse(schema.origin)).process(rcv);
+            new JsonSchema(schema.ref.parse(schema.origin.raw)).process(rcv);
         } else {
             fetch(schema.ref.url).then(function (resp) {
                 return resp.json();
