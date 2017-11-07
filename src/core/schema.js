@@ -81,6 +81,7 @@ JsonSchema.prototype.parse = function (schema, root) {
     setArrIds(this.schema, 'oneOf');
     setId(this.schema, 'enum', 'array');
     if (schema['$ref']) {
+        this.schema.type = 'ref';
         this.schema.ref = new JsonRef(schema['$ref']);
         this.schema.origin = root;
     } else if (this.schema.type) {
@@ -131,37 +132,31 @@ JsonSchema.prototype.parse = function (schema, root) {
 
 JsonSchema.prototype.process = function (rcv) {
     const schema = this.schema;
-    if (schema['ref']) {
-        if (schema.ref.url === null) {
-            new JsonSchema(schema.ref.parse(schema.origin.raw)).process(rcv);
-        } else {
-            fetch(schema.ref.url).then(function (resp) {
-                return resp.json();
-            }).then(function (json) {
-                new JsonSchema(schema.ref.match(json)).process(rcv);
-            });
-        }
-    } else {
-        switch (this.schema.type) {
+    return new Promise(function (resolve, reject) {
+        switch (schema.type) {
+            case 'ref':
+                if (schema.ref.url === null) {
+                    new JsonSchema(schema.ref.parse(schema.origin.raw)).process(rcv).then(resolve);
+                } else {
+                    return fetch(schema.ref.url).then(function (resp) {
+                        return resp.json();
+                    }).then(function (json) {
+                        new JsonSchema(schema.ref.match(json)).process(rcv).then(resolve);
+                    });
+                }
+                break;
             case 'null':
-                rcv(this.schema);
-                break;
             case 'boolean':
-                rcv(this.schema);
-                break;
             case 'object':
-                rcv(this.schema);
-                break;
             case 'array':
-                rcv(this.schema);
-                break;
             case 'integer':
             case 'number':
-                rcv(this.schema);
-                break;
             case 'string':
-                rcv(this.schema);
+                resolve(rcv(schema.type, schema));
+                break;
+            default:
+                reject();
                 break;
         }
-    }
+    });
 };
