@@ -21,9 +21,11 @@
   },
   "homepage": "https://github.com/iamtakingiteasy/json-schema-ui-parser#readme",
   "dependencies": {
+    "deep-equal": "^1.0.1",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
+    "node-fetch": "^1.7.3",
     "tape": "^4.8.0"
   }
 }

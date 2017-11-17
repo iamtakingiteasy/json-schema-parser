@@ -1,10 +1,10 @@
 exports = module.exports = JsonRef;
 
 function JsonRef(refstr) {
-    if (refstr.indexOf("#") >= 0) {
+    if (refstr.indexOf("#") >= 0 || refstr.startsWith('http')) {
         const s = refstr.split("#");
-        this.url = (s[0] === '') ? null : s[0];
-        this.parts = this.parse(decodeURI(s[1]));
+        this.url = (s[0] === '') ? null : s[0]
+        this.parts = this.parse(decodeURI(s[1] || ''));
     } else {
         this.url = null;
         this.parts = this.parse(refstr);
@@ -36,14 +36,22 @@ JsonRef.prototype.match = function (json) {
         const current = rest[0];
         rest.shift();
         if ((typeof json) === 'object') {
-            return iterate(rest, json[current]);
+            if ((typeof json[current]) === 'undefined') {
+                rest.unshift(current);
+                throw {rest: rest, json: json};
+            } else {
+                return iterate(rest, json[current]);
+            }
         } else if ((typeof json) === 'array') {
             const idx = parseInt(current);
             if (idx < json.length) {
                 return iterate(rest, json[idx]);
+            } else {
+                rest.unshift(current);
+                throw {rest: rest, json: json};
             }
         }
         return undefined;
     }
-    return iterate(this.parts, json);
+    return iterate(this.parts.slice(), json);
 };
