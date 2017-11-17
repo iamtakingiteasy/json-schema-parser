@@ -611,3 +611,22 @@ JsonSchema.prototype.validateTranslate = function (value, lang) {
         return JsonSchema.prototype.translate(t, lang);
     });
 };
+
+JsonSchema.prototype.inferType = function () {
+    if (this.schema.type) {
+        return this.schema.type;
+    }
+    if (this.schema.multipleOf || this.schema.maximum || this.schema.minimum || this.schema.exclusiveMaximum || this.schema.exclusiveMinimum) {
+        return 'number';
+    }
+    if (this.schema.minLength || this.schema.maxLength || this.schema.pattern) {
+        return 'string';
+    }
+    if (this.schema.items || this.schema.maxItems || this.schema.minItems || this.schema.uniqueItems || this.schema.contains) {
+        return 'array';
+    }
+    if (this.schema.maxProperties || this.schema.minProperties || this.schema.required || this.schema.properties || this.schema.patternProperties || this.schema.additionalProperties || this.schema.dependencies || this.schema.propertyNames) {
+        return 'object';
+    }
+    return null;
+};
